@@ -20,7 +20,7 @@ namespace CLUE
 
   IMU imuData;
 
-  GFXcanvas16 canvas16(10, 10);
+  GFXcanvas16 canvas16(240, 240);
 
   bool init()
   {
@@ -127,5 +127,23 @@ namespace CLUE
   {
     ::tone(ARCADA_AUDIO_OUT, freq, duration);
   }
-  
+
+  /*
+  def compassHeading(declicationDeg=-90, declicationMin=6.0):
+    declination = (declicationDeg + declicationMin / 60.0) * (math.pi / 180.0)
+    x, y, _ = clue.magnetic
+    headingRad = math.atan2(y, x)
+    headingRad = headingRad + declination
+    if headingRad < 0:
+        headingRad = headingRad + (2 * math.pi)
+    
+    if headingRad >= 2 * math.pi:
+        headingRad = headingRad - (2 * math.pi)
+
+    headingDeg = headingRad * 180.0 / math.pi
+    degrees = math.floor(headingDeg)
+    minutes = math.ceil((headingDeg - degrees) * 60.0)
+    return (degrees, minutes)
+  */
+
 }
