@@ -128,6 +128,11 @@ namespace CLUE
     ::tone(ARCADA_AUDIO_OUT, freq, duration);
   }
 
+  Adafruit_Arcada& arcada()
+  {
+    return arcada;
+  }
+
   /*
   def compassHeading(declicationDeg=-90, declicationMin=6.0):
     declination = (declicationDeg + declicationMin / 60.0) * (math.pi / 180.0)

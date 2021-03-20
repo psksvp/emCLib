@@ -31,6 +31,8 @@ namespace CLUE
   void print(const char* s);
   void whiteLED(bool state);
   void playTone(unsigned int freq, unsigned long duration);
+
+  Adafruit_Arcada& arcada();
 }
 
 #endif
