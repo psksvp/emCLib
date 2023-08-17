@@ -19,19 +19,21 @@
 #define XM A7  // must be an analog pin, use "A
 #define YM A6   // can be a digital pin
 #define XP A5   // can be a digital pin
+#define X_MIN  750
+#define X_MAX  325
+#define Y_MIN  840
+#define Y_MAX  240
 
 namespace PyPortal 
 {
   Adafruit_ILI9341 tft = Adafruit_ILI9341(tft8bitbus, TFT_D0, TFT_WR, TFT_DC, TFT_CS, TFT_RST, TFT_RD);
-
   Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
   Adafruit_SPIFlash flash(&flashTransport);
 
   Adafruit_ADT7410 tempsensor = Adafruit_ADT7410(); 
   SdFat SD;
   TouchScreen touchInput = TouchScreen(XP, YP, XM, YM, 300);
-
-  TSPoint touchPt;
+  TSPoint touchPoint;
 
   void init()
   {
@@ -51,7 +53,6 @@ namespace PyPortal
     tft.setTextColor(ILI9341_GREEN);
     tft.setTextWrap(true);
     tft.setCursor(0, 0);
-
     if (!flash.begin())
     {
       Serial.println("Could not find flash on QSPI bus!");
@@ -141,23 +142,36 @@ namespace PyPortal
     return tft;
   }
 
-  TSPoint& touch()
+  bool touch()
   {
-    TSPoint touchPt = touchInput.getPoint();
+    TSPoint p = touchInput.getPoint();
     // we have some minimum pressure we consider 'valid'
     // pressure of 0 means no pressing!
-    if (touchPt.z > ts.pressureThreshhold) 
+    if (p.z > touchInput.pressureThreshhold) 
     {
-    //  Serial.print("X = "); Serial.print(p.x);
-    //  Serial.print("\tY = "); Serial.print(p.y);
-    //  Serial.print("\tPressure = "); Serial.println(p.z);
-     int16_t x = map(p.x, X_MIN, X_MAX, 0, 240);
-     int16_t y = map(p.y, Y_MIN, Y_MAX, 0, 320);
-    return touchInput;
+      touchPoint.x = map(p.x, X_MIN, X_MAX, 0, display().width());
+      touchPoint.y = map(p.y, Y_MIN, Y_MAX, 0, display().height());
+      touchPoint.z = p.z;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  TSPoint touchedCoord()
+  {
+    return touchPoint;
   }
 
   uint16_t lightSensor()
   {
     return analogRead(LIGHT_SENSOR);
+  }
+
+  float temperature()
+  {
+    return tempsensor.readTempC();
   }
 }
